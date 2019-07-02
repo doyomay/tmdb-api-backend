@@ -8,21 +8,48 @@ use Tmdb\Laravel\Facades\Tmdb;
 
 class TMDBController extends ApiBaseController
 {
+    /**
+     * @param $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        return Tmdb::getMoviesApi()->getMovie($id);
+        try {
+            $tmdb = Tmdb::getMoviesApi()->getMovie($id);
+        } catch (\Exception $exception) {
+            return $this->sendError($exception->getMessage());
+        }
+        return $this->sendResponse($tmdb, '');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function popular(Request $request)
     {
-        $page = $request->get('page') ?? 1;
-        return Tmdb::getMoviesApi()->getPopular(['page' => $page]);
+        try {
+            $page = $request->get('page') ?? 1;
+            $popularMovies = Tmdb::getMoviesApi()->getPopular(['page' => $page]);
+        } catch (\Exception $exception) {
+            return $this->sendError($exception->getMessage());
+        }
+        return $this->sendResponse($popularMovies, '');
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function search(Request $request)
     {
-        $search = $request->get('q');
-        $page = $request->get('page') ?? 1;
-        return Tmdb::getSearchApi()->searchMovies($search, ['page' => $page]);
+        try {
+            $search = $request->get('q');
+            $page = $request->get('page') ?? 1;
+            $result = Tmdb::getSearchApi()->searchMovies($search, ['page' => $page]);
+        } catch (\Exception $exception) {
+            return $this->sendError($exception->getMessage());
+        }
+        return $this->sendResponse($result, '');
     }
 }

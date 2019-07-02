@@ -37,4 +37,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function favoriteMovies() {
+        return $this->belongsToMany(Movie::class, 'favorite_movies' )
+            ->using(FavoriteMovie::class)
+            ->as('favorite_movies')
+            ->withTimestamps();
+    }
 }

@@ -14,9 +14,15 @@ use Illuminate\Http\Request;
 */
 
 Route::post('register',  'Api\AuthController@register');
-
-Route::middleware('auth:api')->prefix('movie')->group(function () {
+Route::middleware('api')->prefix('movie')->group(function () {
+    Route::get('/', 'Api\TMDBController@search');
     Route::get('/{id}', 'Api\TMDBController@show')->where('id', '[0-9]+');
-    Route::get('/search', 'Api\TMDBController@search');
     Route::get('/popular', 'Api\TMDBController@popular');
 });
+
+Route::middleware('api')->prefix('user')->group(function () {
+    Route::get('/favorites', 'Api\UserController@favorites');
+    Route::post('/favorites/{id}', 'Api\UserController@addFavourite')->where('id', '[0-9]+');
+    Route::delete('/favorites/{id}', 'Api\UserController@removeFavourite')->where('id', '[0-9]+');
+});
+
